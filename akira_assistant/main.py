@@ -4,32 +4,27 @@ Akira - AI Voice Assistant with Animated Anime Character
 Main application entry point
 """
 
+import tkinter as tk
+from tkinter import ttk
 import sys
 import os
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import Qt
 from akira_ui import AkiraMainWindow
 
 def main():
     """Main application entry point"""
-    # Enable high DPI scaling
-    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
+    # Create main window
+    root = tk.Tk()
     
-    app = QApplication(sys.argv)
+    # Set window properties
+    root.title("Akira - AI Assistant")
+    root.geometry("800x600")
+    root.resizable(True, True)
     
-    # Set application properties
-    app.setApplicationName("Akira Assistant")
-    app.setApplicationVersion("1.0")
-    app.setOrganizationName("Akira AI")
+    # Create application
+    app = AkiraMainWindow(root)
     
-    # Create and show main window
-    window = AkiraMainWindow()
-    window.show()
-    
-    # Start event loop
-    sys.exit(app.exec())
+    # Start main loop
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
