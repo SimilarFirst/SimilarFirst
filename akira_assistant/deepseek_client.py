@@ -131,7 +131,30 @@ class DeepSeekClient:
     def test_connection(self) -> bool:
         """Test API connection"""
         try:
-            result = self.chat_completion("Привет!")
-            return result["status"] == "success"
-        except:
+            # Try a simple API call
+            response = requests.post(
+                f"{self.base_url}/chat/completions",
+                headers=self.headers,
+                json={
+                    "model": "deepseek-reasoner",
+                    "messages": [{"role": "user", "content": "Hi"}],
+                    "max_tokens": 10
+                },
+                timeout=10
+            )
+            
+            print(f"Test response status: {response.status_code}")
+            print(f"Test response: {response.text}")
+            
+            if response.status_code == 200:
+                return True
+            elif "insufficient balance" in response.text.lower():
+                print("❌ API key has insufficient balance")
+                return False
+            else:
+                print(f"❌ API test failed: {response.text}")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Connection test failed: {e}")
             return False
