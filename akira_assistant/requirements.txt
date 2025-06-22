@@ -1,0 +1,12 @@
+PyQt6==6.7.0
+PyQt6-Qt6==6.7.2
+PyQt6-sip==13.6.0
+torch>=2.0.0
+torchaudio>=2.0.0
+openai>=1.0.0
+SpeechRecognition>=3.10.0
+pyaudio>=0.2.11
+requests>=2.31.0
+python-dotenv>=1.0.0
+Pillow>=10.0.0
+numpy>=1.24.0
