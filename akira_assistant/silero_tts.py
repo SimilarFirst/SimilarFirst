@@ -9,7 +9,7 @@ import numpy as np
 import tempfile
 import os
 from typing import Optional
-from PyQt6.QtCore import QThread, pyqtSignal
+import threading
 
 class SileroTTSEngine:
     """Silero TTS engine for Russian speech synthesis"""
@@ -122,25 +122,25 @@ class SileroTTSEngine:
         return ['baya', 'kseniya', 'xenia', 'aidar', 'eugene']
 
 
-class TTSWorker(QThread):
+class TTSWorker(threading.Thread):
     """Worker thread for TTS processing"""
     
-    finished = pyqtSignal(str)  # Audio file path
-    error = pyqtSignal(str)     # Error message
-    
-    def __init__(self, tts_engine: SileroTTSEngine, text: str, speaker: str = None):
-        super().__init__()
+    def __init__(self, tts_engine: SileroTTSEngine, text: str, speaker: str = None, callback=None, error_callback=None):
+        super().__init__(daemon=True)
         self.tts_engine = tts_engine
         self.text = text
         self.speaker = speaker
+        self.callback = callback
+        self.error_callback = error_callback
     
     def run(self):
         """Run TTS processing in background thread"""
         try:
             audio_file = self.tts_engine.create_temp_audio(self.text)
-            if audio_file:
-                self.finished.emit(audio_file)
-            else:
-                self.error.emit("Failed to generate audio")
+            if audio_file and self.callback:
+                self.callback(audio_file)
+            elif not audio_file and self.error_callback:
+                self.error_callback("Failed to generate audio")
         except Exception as e:
-            self.error.emit(str(e))
+            if self.error_callback:
+                self.error_callback(str(e))
