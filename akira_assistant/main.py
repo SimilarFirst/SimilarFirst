@@ -120,11 +120,17 @@ def clear_history():
 @app.route('/api/status')
 def status():
     """Get system status"""
-    return jsonify({
+    status_info = {
         'deepseek_ready': deepseek_client is not None,
         'tts_ready': tts_engine is not None and tts_engine.is_loaded,
         'conversation_length': len(conversation_history)
-    })
+    }
+    
+    if deepseek_client:
+        status_info['llm_status'] = deepseek_client.get_status()
+        status_info['llm_mode'] = deepseek_client.mode
+    
+    return jsonify(status_info)
 
 if __name__ == '__main__':
     print("🚀 Starting Akira Assistant...")
